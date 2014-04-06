@@ -13,6 +13,13 @@ MinMaxHeap.o: MinMaxHeap.cpp MinMaxHeap.hpp
 	$(CC) $(CFLAGS) -c MinMaxHeap.cpp 
 generate_test_file: generate_test_file.cpp
 	$(CC) $(CFLAGS) -o generate_test_file generate_test_file.cpp
+
+.PHONY: test
+test: $(EXEC) Driver.pl generate_test_file
+	./generate_test_file 50
+	./$(EXEC) > my.out
+	perl Driver.pl > perl.out
+	diff my.out perl.out
 .PHONY: clean
 clean:
-	rm -rf $(OBJS) $(EXEC)
+	rm -rf $(OBJS) $(EXEC) *.out test_data.txt

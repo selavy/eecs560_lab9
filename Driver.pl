@@ -12,14 +12,13 @@ foreach my $line (@text) {
 }
 
 $mm_heap->print_heap();
-#my $min = $mm_heap->pop_min();
-#print "min was: $min\n";
-#my $max = $mm_heap->pop_max();
-#print "max was: $max\n";
-#$mm_heap->print_heap();
-#$min = $mm_heap->pop_min();
-#$max = $mm_heap->pop_max();
-#print "now min is: $min\n";
-#print "now max is: $max\n";
+my $min = $mm_heap->pop_min();
+print "min: $min\n";
+my $max = $mm_heap->pop_max();
+print "max: $max\n";
+$min = $mm_heap->pop_min();
+$max = $mm_heap->pop_max();
+print "min: $min\n";
+print "max: $max\n";
 
 exit

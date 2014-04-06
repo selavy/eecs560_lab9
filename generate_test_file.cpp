@@ -30,7 +30,7 @@ int main( int argc, char **argv ) {
   srand( time( NULL ) );
 
   for( int i = 0; i < n; ++i ) {
-    ofs << ( rand() % 500 ) - 250 << endl;
+    ofs << ( rand() % (4*n) ) - (2*n) << endl;
   }
 
   ofs.close();
