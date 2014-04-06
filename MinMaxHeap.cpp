@@ -1,6 +1,6 @@
 #include "MinMaxHeap.hpp"
 
-MinMaxHeap::MinMaxHeap() : current_( 1 ), max_( 100 ) {
+MinMaxHeap::MinMaxHeap() : current_( 1 ), max_( 500 ) {
   A_ = new int[ max_ + 1 ];
 }
 
@@ -51,8 +51,7 @@ void MinMaxHeap::DeleteMax() {
     return; // error condition, throw exception?
   }
   else if( current_ == 2 ) {
-    A_[1] = A_[--current_];
-    TrickleDown( 1 );
+    --current_;
     return;
   }
   else {
@@ -124,28 +123,33 @@ void MinMaxHeap::TrickleDownMin( int i ) {
   // in the array with the lowest value out of
   // the children and grandchildren
   //
-  if( childL < current_ ) {
+  if( EXISTS( childL ) ) {
     m = childL;
-    if( ( childR < current_ ) && ( A_[childR] < A_[m] ) ) {
+    if( EXISTS( childR ) && ( A_[childR] < A_[m] ) ) {
       m = childR;
-      if( ( grandchildL_L < current_ ) && ( A_[grandchildL_L] < A_[m] ) ) {
+      if( EXISTS( grandchildL_L ) && ( A_[grandchildL_L] < A_[m] ) ) {
 	m = grandchildL_L;
-	if( ( grandchildL_R < current_ ) && ( A_[grandchildL_R] < A_[m] ) ) {
+	if( EXISTS( grandchildL_R ) && ( A_[grandchildL_R] < A_[m] ) ) {
 	  m = grandchildL_R;
 	}
       }
-      if( ( grandchildR_L < current_ ) && ( A_[grandchildR_L] < A_[m] ) ) {
+      if( EXISTS( grandchildR_L ) && ( A_[grandchildR_L] < A_[m] ) ) {
 	m = grandchildR_L;
-	if( ( grandchildR_R < current_ ) && ( A_[grandchildR_R] < A_[m] ) ) {
+	if( EXISTS( grandchildR_R ) && ( A_[grandchildR_R] < A_[m] ) ) {
 	  m = grandchildR_R;
 	}
       }
     }
   } else {
+    //
     // has no children
+    //
     return;
   }
   
+  //
+  // m holds index to smallest child or grandchild of A[i]
+  //
   if( ( m == grandchildL_L ) || ( m == grandchildL_R ) || ( m == grandchildR_L ) || ( m == grandchildR_R ) ) { // if A[m] is a grandchild of A[i] then
     //
     // A_[m] is a granchild of A_[i]
@@ -193,25 +197,27 @@ void MinMaxHeap::TrickleDownMax( int i ) {
   // in the array with the lowest value out of
   // the children and grandchildren
   //
-  if( childL < current_ ) {
+  if( EXISTS( childL ) ) {
     m = childL;
-    if( ( childR < current_ ) && ( A_[childR] > A_[m] ) ) {
+    if( EXISTS( childR ) && ( A_[childR] > A_[m] ) ) {
       m = childR;
-      if( ( grandchildL_L < current_ ) && ( A_[grandchildL_L] > A_[m] ) ) {
+      if( EXISTS( grandchildL_L ) && ( A_[grandchildL_L] > A_[m] ) ) {
 	m = grandchildL_L;
-	if( ( grandchildL_R < current_ ) && ( A_[grandchildL_R] > A_[m] ) ) {
+	if( EXISTS( grandchildL_R ) && ( A_[grandchildL_R] > A_[m] ) ) {
 	  m = grandchildL_R;
 	}
       }
-      if( ( grandchildR_L < current_ ) && ( A_[grandchildR_L] > A_[m] ) ) {
+      if( EXISTS( grandchildR_L ) && ( A_[grandchildR_L] > A_[m] ) ) {
 	m = grandchildR_L;
-	if( ( grandchildR_R < current_ ) && ( A_[grandchildR_R] > A_[m] ) ) {
+	if( EXISTS( grandchildR_R ) && ( A_[grandchildR_R] > A_[m] ) ) {
 	  m = grandchildR_R;
 	}
       }
     }
   } else {
+    //
     // has no children
+    //
     return;
   }
   
@@ -225,13 +231,13 @@ void MinMaxHeap::TrickleDownMax( int i ) {
       A_[i] = tmp;
 	
       const int parent = m / 2;
-      if( A_[m] < A_[parent] ) { // if A[m] > A[parent(m)] then
+      if( A_[m] < A_[parent] ) { // if A[m] < A[parent(m)] then
 	int tmp = A_[m];
 	A_[m] = A_[parent];
 	A_[parent] = tmp;
-      } // end if( A[m] > A[parent(m)] )
+      } // end if( A[m] < A[parent(m)] )
       TrickleDownMax( m );
-    } // end if( A[m] < A[i] )
+    } // end if( A[m] > A[i] )
     else {
       //
       // A[m] is a child of A[i]
@@ -240,7 +246,7 @@ void MinMaxHeap::TrickleDownMax( int i ) {
 	int tmp = A_[m];
 	A_[m] = A_[i];
 	A_[i] = tmp;
-      } // end if A[m] < A[i]
+      } // end if A[m] > A[i]
     } // end else
   } // end if A[m] is a grandchild of A[i]
 }
@@ -249,7 +255,7 @@ void MinMaxHeap::BubbleUp( int i ) {
   const int level = log2( i );
   if( ( level & 1 ) == 0 ) { // if level is even => min level
     const int parent = i / 2;
-    if( ( parent >= 1 ) && A_[i] > A_[parent] ) {
+    if( ( parent >= 1 ) && ( A_[i] > A_[parent] ) ) {
       int tmp = A_[i];
       A_[i] = A_[parent];
       A_[parent] = tmp;
@@ -291,7 +297,7 @@ void MinMaxHeap::BubbleUpMax( int i ) {
       int tmp = A_[i];
       A_[i] = A_[grandparent];
       A_[grandparent] = tmp;
-      BubbleUpMin( grandparent );
+      BubbleUpMax( grandparent );
     }
   }
 }

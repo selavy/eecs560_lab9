@@ -24,15 +24,18 @@ int main(int argc, char **argv) {
   while( ifs >> line ) {
     int val = atoi( line.c_str() );
     heap.insert( val );
+    //heap.print( cout );
+    //cout << "-------------------------------------------------\n" << endl;
   }
   
   heap.print( cout );
-  cout << "min was: " << heap.FindMin() << endl;
-  cout << "max was: " << heap.FindMax() << endl;
-  heap.DeleteMin();
-  heap.DeleteMax();
-  cout << "now min is: " << heap.FindMin() << endl;
-  cout << "now max is: " << heap.FindMax() << endl;
-  heap.print( cout );
+  //heap.print( cout );
+  //cout << "min was: " << heap.FindMin() << endl;
+  //cout << "max was: " << heap.FindMax() << endl;
+  //heap.DeleteMin();
+  //heap.DeleteMax();
+  //cout << "now min is: " << heap.FindMin() << endl;
+  //cout << "now max is: " << heap.FindMax() << endl;
+  //heap.print( cout );
   return 0;
 }

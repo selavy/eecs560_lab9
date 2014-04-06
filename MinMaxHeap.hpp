@@ -4,6 +4,8 @@
 #include <iostream>
 #include <climits>
 
+#define EXISTS(x) ((x) < (current_))
+
 using namespace std;
 
 class MinMaxHeap {
