@@ -45,14 +45,45 @@ int MinMaxHeap::FindMin() {
 
 void MinMaxHeap::DeleteMax() {
   //
-  // TODO
+  // Fix Me
   //
+  if( current_ == 1 ) {
+    return; // error condition, throw exception?
+  }
+  else if( current_ == 2 ) {
+    A_[1] = A_[--current_];
+    TrickleDown( 1 );
+    return;
+  }
+  else {
+    if( current_ > 3 ) {
+      if( A_[2] > A_[3] ) {
+	A_[2] = A_[--current_];
+	TrickleDown( 2 );
+	return;
+      } else {
+	A_[3] = A_[--current_];
+	TrickleDown( 3 );
+	return;
+      }
+    } else {
+      A_[2] = A_[--current_];
+      TrickleDown( 2 );
+      return;
+    }
+  }
 }
 
 void MinMaxHeap::DeleteMin() {
-  //
-  // TODO
-  //
+  if( current_ <= 1 ) {
+    //
+    // nothing to remove
+    //
+    return;
+  }
+
+  A_[1] = A_[--current_];
+  TrickleDown( 1 );
 }
 
 void MinMaxHeap::print( std::ostream& os ) {

@@ -27,11 +27,12 @@ int main(int argc, char **argv) {
   }
   
   heap.print( cout );
-  int min = heap.FindMin();
-  cout << "min was: " << min << endl;
-  int max = heap.FindMax();
-  cout << "max was: " << max << endl;
+  cout << "min was: " << heap.FindMin() << endl;
+  cout << "max was: " << heap.FindMax() << endl;
   heap.DeleteMin();
   heap.DeleteMax();
+  cout << "now min is: " << heap.FindMin() << endl;
+  cout << "now max is: " << heap.FindMax() << endl;
+  heap.print( cout );
   return 0;
 }
