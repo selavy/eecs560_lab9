@@ -32,7 +32,8 @@ int main(int argc, char **argv) {
 
   MinMaxHeap heap2( &container[0], container.size() );
   heap.print( cout );
-  for( int i = 0; i < 50; ++i ) {
+  int upperLimit = container.size() / 8;
+  for( int i = 0; i < upperLimit; ++i ) {
     int min = heap.FindMin();
     if( min != heap2.FindMin() ) {
       cout << heap2.FindMin() << ": min didn't match!!" << endl;
@@ -52,7 +53,7 @@ int main(int argc, char **argv) {
   heap.insert( -200 ); heap2.insert( -200 );
   heap.insert( -500 ); heap2.insert( -500 );
 
-  for( int i = 0; i < 50; ++i ) {
+  for( int i = 0; i < upperLimit; ++i ) {
     int min = heap.FindMin();
     if( min != heap2.FindMin() ) {
       cout << heap2.FindMin() << ": min didn't match!!" << endl;

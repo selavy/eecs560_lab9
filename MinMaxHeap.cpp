@@ -4,7 +4,7 @@ MinMaxHeap::MinMaxHeap() : current_( 1 ), max_( 500 ) {
   A_ = new int[ max_ + 1 ];
 }
 
-MinMaxHeap::MinMaxHeap( int A[], int size ) : current_( size + 1 ), max_( 500 ) {
+MinMaxHeap::MinMaxHeap( int A[], int size ) : current_( size + 1 ), max_( size * 2 ) {
   A_ = new int[ max_ + 1 ];
   memcpy( A_ + 1, A, sizeof( int ) * size );
   const int middle = (size + 1) / 2;

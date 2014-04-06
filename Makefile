@@ -27,4 +27,4 @@ test: $(EXEC) Driver.pl generate_test_file pretty_print
 	diff my.out perl.out
 .PHONY: clean
 clean:
-	rm -rf $(OBJS) $(EXEC) *.out test_data.txt pretty_print
+	rm -rf $(OBJS) $(EXEC) *.out test_data.txt pretty_print *.o
