@@ -4,6 +4,8 @@
 #include <iostream>
 #include <climits>
 #include <cstring>
+#include <vector>
+#include <utility>
 
 #define EXISTS(x) ((x) < (current_))
 
@@ -21,6 +23,7 @@ public:
   void DeleteMax();
   void DeleteMin();
   void print( std::ostream& os );
+  vector<int> getVectorRepresentation();
 
 private:
   int log2( int i );

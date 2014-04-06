@@ -4,10 +4,10 @@ MinMaxHeap::MinMaxHeap() : current_( 1 ), max_( 500 ) {
   A_ = new int[ max_ + 1 ];
 }
 
-MinMaxHeap::MinMaxHeap( int A[], int size ) : current_( size ), max_( 500 ) {
-  memcpy( A_ + 1, A, size );
-  
-  const int middle = size / 2;
+MinMaxHeap::MinMaxHeap( int A[], int size ) : current_( size + 1 ), max_( 500 ) {
+  A_ = new int[ max_ + 1 ];
+  memcpy( A_ + 1, A, sizeof( int ) * size );
+  const int middle = (size + 1) / 2;
   for( int i = middle; i >= 1; --i ) {
     TrickleDown( i );
   }
@@ -87,6 +87,14 @@ void MinMaxHeap::print( std::ostream& os ) {
   for( int i = 1; i < current_; ++i ) {
     os << A_[i] << std::endl;
   }
+}
+
+vector<int> MinMaxHeap::getVectorRepresentation() {
+  vector<int> container;
+  for( int i = 1; i < current_; ++i ) {
+    container.push_back( A_[i] );
+  }
+  return move( container );
 }
 
 int MinMaxHeap::log2( int i ) {

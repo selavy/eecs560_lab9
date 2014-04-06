@@ -7,8 +7,6 @@ open( FILE, "test_data.txt" );
 foreach my $line (@text) {
     chop( $line );
     $mm_heap->insert( $line );
-    #$mm_heap->print();
-    #print "-------------------------------------------------\n\n";
 }
 
 $mm_heap->print();
