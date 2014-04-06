@@ -4,6 +4,7 @@ DEBUG = -g
 CFLAGS = -Wall -Werror -std=c++11 $(DEBUG)
 EXEC = $(STUDENT_ID)_lab9
 OBJS = main.o MinMaxHeap.o 
+N = 200
 
 $(EXEC): $(OBJS)
 	$(CC) $(CFLAGS) -o $(EXEC) $(OBJS)
@@ -16,7 +17,7 @@ generate_test_file: generate_test_file.cpp
 
 .PHONY: test
 test: $(EXEC) Driver.pl generate_test_file
-	./generate_test_file 50
+	./generate_test_file $(N)
 	./$(EXEC) > my.out
 	perl Driver.pl > perl.out
 	diff my.out perl.out

@@ -4,6 +4,15 @@ MinMaxHeap::MinMaxHeap() : current_( 1 ), max_( 500 ) {
   A_ = new int[ max_ + 1 ];
 }
 
+MinMaxHeap::MinMaxHeap( int A[], int size ) : current_( size ), max_( 500 ) {
+  memcpy( A_ + 1, A, size );
+  
+  const int middle = size / 2;
+  for( int i = middle; i >= 1; --i ) {
+    TrickleDown( i );
+  }
+}
+
 MinMaxHeap::~MinMaxHeap() {
   delete [] A_;
 }
@@ -21,18 +30,17 @@ void MinMaxHeap::insert( int i ) {
 }
 
 int MinMaxHeap::FindMax() {
-  if( current_ == 1 ) {
+  if( current_ == 1 ) { // if no elements
     return 0; // error condition, throw exception?
   }
-  else if( current_ == 2 ) {
+  else if( current_ == 2 ) { // if only 1 element
     return A_[1];
   }
-  else {
-    if( current_ > 3 ) {
-      return ( A_[2] > A_[3] ) ? A_[2] : A_[3];
-    } else {
-      return A_[2];
-    }
+  else if( current_ == 3 ) { // if only 2 elements
+    return A_[2];
+  }
+  else { // else more than 2 elements
+    return ( A_[2] > A_[3] ) ? A_[2] : A_[3];
   }
 }
 
@@ -50,26 +58,16 @@ void MinMaxHeap::DeleteMax() {
   if( current_ == 1 ) {
     return; // error condition, throw exception?
   }
-  else if( current_ == 2 ) {
+  else if( current_ == 2 ) { // if only 1 element
     --current_;
-    return;
   }
-  else {
-    if( current_ > 3 ) {
-      if( A_[2] > A_[3] ) {
-	A_[2] = A_[--current_];
-	TrickleDown( 2 );
-	return;
-      } else {
-	A_[3] = A_[--current_];
-	TrickleDown( 3 );
-	return;
-      }
-    } else {
-      A_[2] = A_[--current_];
-      TrickleDown( 2 );
-      return;
-    }
+  else if( current_ == 3 ) { // if only 2 elements
+    --current_;
+  }
+  else { // else more than 2 elements
+    int max_index = ( A_[2] > A_[3] ) ? 2 : 3;
+    A_[max_index] = A_[--current_];
+    TrickleDown( max_index );
   }
 }
 
@@ -99,7 +97,9 @@ int MinMaxHeap::log2( int i ) {
 
 void MinMaxHeap::TrickleDown( int i ) {
   const int level = log2( i );
-  if( level & 1 ) { // if on an odd level => max
+  if( level == 0 ) {
+    TrickleDownMin( i );
+  } else if( level & 1 ) { // if on an odd level => max
     TrickleDownMax( i );
   } else { // if on an even level => min
     TrickleDownMin( i );
@@ -121,26 +121,42 @@ void MinMaxHeap::TrickleDownMin( int i ) {
   // if none, then m will remain 0
   // otherwise, m will be set to the position
   // in the array with the lowest value out of
-  // the children and grandchildren
+  // the children and grandchildren.
   //
-  if( EXISTS( childL ) ) {
+  // This control logic depends on the fact that
+  // if the node does not have a left child then
+  // it does not have a right child, and if it
+  // doesn't have a right child then it doesn't
+  // have any grandchildren, etc.
+  //
+  if( EXISTS( childL ) ) { // if has left child
     m = childL;
-    if( EXISTS( childR ) && ( A_[childR] < A_[m] ) ) {
-      m = childR;
-      if( EXISTS( grandchildL_L ) && ( A_[grandchildL_L] < A_[m] ) ) {
-	m = grandchildL_L;
-	if( EXISTS( grandchildL_R ) && ( A_[grandchildL_R] < A_[m] ) ) {
-	  m = grandchildL_R;
-	}
+    if( EXISTS( childR ) ) { // if has right child
+      if( A_[childR] < A_[m] ) { // if should set m to right child
+	m = childR;
       }
-      if( EXISTS( grandchildR_L ) && ( A_[grandchildR_L] < A_[m] ) ) {
-	m = grandchildR_L;
-	if( EXISTS( grandchildR_R ) && ( A_[grandchildR_R] < A_[m] ) ) {
-	  m = grandchildR_R;
+      if( EXISTS( grandchildL_L ) ) { // if has left left grandchild
+	if( A_[grandchildL_L] < A_[m] ) { // if should set m to left left grandchild
+	  m = grandchildL_L;
+	}
+	if( EXISTS( grandchildL_R ) ) { // if has left right grandchild
+	  if( A_[grandchildL_R] < A_[m] ) { // if should set m to left right grandchild
+	    m = grandchildL_R;
+	  }
+	  if( EXISTS( grandchildR_L ) ) { // if has right left grandchild
+	    if( A_[grandchildR_L] < A_[m] ) { // if should set m to right left grandchild
+	      m = grandchildR_L;
+	    }
+	    if( EXISTS( grandchildR_R ) && ( A_[grandchildR_R] < A_[m] ) ) { // if has right right grandchild and should set m to that
+	      m = grandchildR_R;
+	    }
+	  }
 	}
       }
     }
-  } else {
+  }
+
+  if( m == 0 ) {
     //
     // has no children
     //
@@ -167,17 +183,17 @@ void MinMaxHeap::TrickleDownMin( int i ) {
       } // end if( A[m] > A[parent(m)] )
       TrickleDownMin( m );
     } // end if( A[m] < A[i] )
-    else {
-      //
-      // A[m] is a child of A[i]
-      //
-      if( A_[m] < A_[i] ) {
-	int tmp = A_[m];
-	A_[m] = A_[i];
-	A_[i] = tmp;
-      } // end if A[m] < A[i]
-    } // end else
   } // end if A[m] is a grandchild of A[i]
+  else {
+    //
+    // A[m] is a child of A[i]
+    //
+    if( A_[m] < A_[i] ) {
+      int tmp = A_[m];
+      A_[m] = A_[i];
+      A_[i] = tmp;
+    } // end if A[m] < A[i]
+  } // end else
 }
 
 void MinMaxHeap::TrickleDownMax( int i ) {
@@ -194,27 +210,37 @@ void MinMaxHeap::TrickleDownMax( int i ) {
   // Check if has any children or grandchild
   // if none, then m will remain 0
   // otherwise, m will be set to the position
-  // in the array with the lowest value out of
+  // in the array with the highest value out of
   // the children and grandchildren
   //
-  if( EXISTS( childL ) ) {
+  if( EXISTS( childL ) ) { // if has left child
     m = childL;
-    if( EXISTS( childR ) && ( A_[childR] > A_[m] ) ) {
-      m = childR;
-      if( EXISTS( grandchildL_L ) && ( A_[grandchildL_L] > A_[m] ) ) {
-	m = grandchildL_L;
-	if( EXISTS( grandchildL_R ) && ( A_[grandchildL_R] > A_[m] ) ) {
-	  m = grandchildL_R;
-	}
+    if( EXISTS( childR ) ) { // if has right child
+      if( A_[childR] > A_[m] ) { // if should set m to right child
+	m = childR;
       }
-      if( EXISTS( grandchildR_L ) && ( A_[grandchildR_L] > A_[m] ) ) {
-	m = grandchildR_L;
-	if( EXISTS( grandchildR_R ) && ( A_[grandchildR_R] > A_[m] ) ) {
-	  m = grandchildR_R;
+      if( EXISTS( grandchildL_L ) ) { // if has left left grandchild
+	if( A_[grandchildL_L] > A_[m] ) { // if should set m to left left grandchild
+	  m = grandchildL_L;
+	}
+	if( EXISTS( grandchildL_R ) ) { // if has left right grandchild
+	  if( A_[grandchildL_R] > A_[m] ) { // if should set m to left right grandchild
+	    m = grandchildL_R;
+	  }
+	  if( EXISTS( grandchildR_L ) ) { // if has right left grandchild
+	    if( A_[grandchildR_L] > A_[m] ) { // if should set m to right left grandchild
+	      m = grandchildR_L;
+	    }
+	    if( EXISTS( grandchildR_R ) && ( A_[grandchildR_R] > A_[m] ) ) { // if has right right grandchild and should set m to that
+	      m = grandchildR_R;
+	    }
+	  }
 	}
       }
     }
-  } else {
+  }
+
+  if( m == 0 ) {
     //
     // has no children
     //
@@ -238,17 +264,17 @@ void MinMaxHeap::TrickleDownMax( int i ) {
       } // end if( A[m] < A[parent(m)] )
       TrickleDownMax( m );
     } // end if( A[m] > A[i] )
-    else {
-      //
-      // A[m] is a child of A[i]
-      //
-      if( A_[m] > A_[i] ) {
-	int tmp = A_[m];
-	A_[m] = A_[i];
-	A_[i] = tmp;
-      } // end if A[m] > A[i]
-    } // end else
   } // end if A[m] is a grandchild of A[i]
+  else {
+    //
+    // A[m] is a child of A[i]
+    //
+    if( A_[m] > A_[i] ) {
+      int tmp = A_[m];
+      A_[m] = A_[i];
+      A_[i] = tmp;
+    } // end if A[m] > A[i]
+  } // end else
 }
 
 void MinMaxHeap::BubbleUp( int i ) {

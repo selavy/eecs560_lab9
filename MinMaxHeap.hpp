@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <climits>
+#include <cstring>
 
 #define EXISTS(x) ((x) < (current_))
 
@@ -11,6 +12,7 @@ using namespace std;
 class MinMaxHeap {
 public:
   MinMaxHeap();
+  MinMaxHeap( int A[], int size );
   virtual ~MinMaxHeap();
 
   void insert( int i );
